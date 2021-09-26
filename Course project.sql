@@ -322,3 +322,33 @@ INSERT INTO `rewiew` VALUES
 	(8,8,8,7,1,7,10,10,7,9,'Dignissimos ducimus et et suscipit. Eligendi et id consequuntur aperiam tenetur nulla. Consequatur reprehenderit est consequatur in temporibus quaerat. Placeat exercitationem nihil quae laboriosam. Et aut sed hic et ut sit eveniet.','1998-12-01 02:06:23','2003-03-01 02:42:40'),
 	(9,9,9,3,6,1,7,5,9,6,'Perferendis quae expedita autem reprehenderit est dolores. Molestias tempore soluta molestias eum sapiente dolore. Et est autem voluptatem iste odit amet in enim. Enim dolore in nisi est porro earum iure.','2016-06-18 08:17:50','2002-03-06 06:05:28'),
 	(10,10,10,2,1,3,7,8,9,10,'Debitis aut est velit ea dolorum ut earum velit. Rerum nihil eius minus officia quaerat adipisci perferendis. Distinctio quibusdam dolore omnis et veritatis vero harum. Amet ipsum et facere vero modi.','1987-01-20 01:49:08','1980-12-28 17:17:29');
+
+
+-- Создаем таблицу с данными по оплате и заполняем ее данными
+DROP TABLE IF EXISTS payment;
+CREATE TABLE payment (
+	id SERIAL PRIMARY KEY,
+	property_id BIGINT UNSIGNED NOT NULL,
+	bank_card BOOL DEFAULT 0 COMMENT 'Возможность оплаты банковской картой',
+	price INT UNSIGNED COMMENT 'Цена за ночь',
+	discount decimal(3,2) COMMENT 'Размер скидки',
+	created_at DATETIME DEFAULT NOW(),
+    updated_at DATETIME ON UPDATE NOW(),
+
+	FOREIGN KEY (property_id) REFERENCES property(id)
+);
+
+INSERT INTO `payment` VALUES 
+	(1,1,0,2200,0.05,'2017-04-15','2019-09-10'),
+	(2,2,0,5500,0.00,'1994-06-28','2013-09-24'),
+	(3,3,1,1450,0.00,'1986-04-03','2002-03-10'),
+	(4,4,0,2350,0.10,'1997-10-12','2011-08-13'),
+	(5,5,1,6000,0.00,'1986-10-28','2019-03-06'),
+	(6,6,1,1750,0.05,'1984-09-20','2017-03-05'),
+	(7,7,0,3200,0.00,'1982-10-20','2009-09-14'),
+	(8,8,0,2600,0.05,'1990-06-03','2012-12-10'),
+	(9,9,1,1300,0.00,'2001-08-18','2008-07-29'),
+	(10,10,0,5550,0.20,'2017-08-05','2018-05-02');
+
+
+
