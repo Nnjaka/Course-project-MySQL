@@ -1,8 +1,15 @@
--- Создаем и выбираем БД
+/* Booking.com — крупнейший сайт бронирования проживания в мире. Арендодатели могут разместить свой объект недвижимости для последующей его сдачи в аренду.  
+ Сайт предоставляет широкую настройку для описания объекта. Арендосъемщик на основе этой информации и отзывов от других пользователей, которые ранее проживали 
+ в данном объекте, может подобрать идеальный вариант для проживания. */
+
+
+/* Создаем и выбираем БД*/
 DROP DATABASE IF EXISTS booking;
 CREATE DATABASE booking;
 USE booking;
 
+
+/*Создаем необходимые таблицы и наполняем их данными*/
 -- Создаем таблицу с основными данными о пользователе и заполняем ее данными
 DROP TABLE IF EXISTS users;
 CREATE TABLE users (
@@ -107,8 +114,9 @@ CREATE TABLE property (
 	user_id BIGINT UNSIGNED NOT NULL,
 	type_of_property_id BIGINT UNSIGNED NOT NULL,
 	name VARCHAR(255) NOT NULL,
+	description TEXT NOT NULL,
 	media_id BIGINT UNSIGNED NOT NULL,
-	country VARCHAR(100) NOT NULL,
+	town VARCHAR(100) NOT NULL,
 	postcode VARCHAR(100) NOT NULL,
 	address VARCHAR(255) NOT NULL,
 	guest TINYINT NOT NULL COMMENT 'Количество гостей',
@@ -126,16 +134,16 @@ CREATE TABLE property (
 );
 
 INSERT INTO `property` VALUES 
-	(1,1,1,'recusandae',1,'56855','679','81423 Kirlin Run Apt. 514\nChanellestad, KS 41538-9468',0,32767,'10:00:00','12:00:54','15:27:36','17:39:02','1980-01-16 18:15:00','1977-11-21 00:24:03'),
-	(2,2,2,'earum',2,'9652843','896','6278 Kallie Village Suite 343\nPort Carolannefurt, NE 32430-4930',0,5868,'08:46:44','23:58:56','06:54:17','09:27:13','1975-05-25 09:05:12','2005-09-03 11:06:57'),
-	(3,3,3,'dolores',3,'57','599','21708 Coleman Street Apt. 049\nNitzscheberg, LA 67570-4119',0,32767,'07:40:01','23:34:32','08:30:05','21:15:18','1971-08-28 17:58:41','2003-07-22 02:51:30'),
-	(4,4,1,'molestias',4,'322413','235','6958 Wilfrid Parkways\nLake Elliot, OH 68434-3306',0,32767,'13:57:23','00:30:54','02:15:04','08:52:22','1976-06-12 22:39:45','2019-04-17 02:19:39'),
-	(5,5,2,'provident',5,'57401','852','053 Roxanne Corners Apt. 552\nLake Wyatt, NV 99093-8424',0,32767,'12:01:08','11:53:49','03:05:00','17:12:44','2014-10-10 13:39:03','2010-09-29 23:09:17'),
-	(6,6,3,'sunt',6,'49','823','7111 Toy Forest Suite 186\nBernhardville, NE 71156',0,64,'23:10:19','07:35:41','13:52:34','15:25:24','2001-07-20 12:44:55','1975-08-12 11:59:39'),
-	(7,7,1,'temporibus',7,'77','900','01172 Alyson Spur\nGrahambury, MS 29250',0,32767,'00:24:35','22:33:35','13:19:44','11:22:35','2015-02-13 14:26:11','1998-08-22 00:48:52'),
-	(8,8,2,'dolores',8,'339946','978','766 Ratke Square\nAlexzanderburgh, MD 39737',0,2136,'02:11:39','09:48:05','06:29:08','19:20:18','1978-11-06 06:16:55','2010-01-27 10:13:41'),
-	(9,9,3,'laborum',9,'36','673','619 Maurice Stream\nHershelton, CO 20465-9105',0,32767,'15:26:23','04:07:15','15:32:47','16:29:24','2000-08-30 13:02:27','1998-11-18 15:38:02'),
-	(10,10,1,'et',10,'7900159','349','68574 Nikolaus Canyon Suite 678\nReannamouth, MO 95023-4352',0,32767,'13:25:35','05:18:05','10:35:22','15:22:50','1991-05-10 02:05:54','2012-09-18 17:10:34');
+	(1,1,1,'recusandae','Quibusdam consequatur quae commodi hic assumenda suscipit illum natus. Accusantium voluptate facilis ut aut eos sit temporibus.',1,'Moscow','679','81423 Kirlin Run Apt. 514\nChanellestad, KS 41538-9468',0,32767,'10:00:00','12:00:54','15:27:36','17:39:02','1980-01-16 18:15:00','1977-11-21 00:24:03'),
+	(2,2,2,'earum','Quia est quis consequuntur expedita hic deleniti cumque. Ratione voluptas iusto facere vel tempora. Rem qui nesciunt laboriosam assumenda nobis molestiae animi natus. Quisquam sed debitis ducimus minima ducimus animi quia. Quia est facilis delectus qui.',2,'Moscow','896','6278 Kallie Village Suite 343\nPort Carolannefurt, NE 32430-4930',0,5868,'08:46:44','23:58:56','06:54:17','09:27:13','1975-05-25 09:05:12','2005-09-03 11:06:57'),
+	(3,3,3,'dolores','Quae quos iure dolorum sunt earum. Illum dolorum libero nihil. Eveniet illo esse quae et molestiae fuga. Quam accusantium adipisci debitis laborum repellendus culpa.',3,'Paris','599','21708 Coleman Street Apt. 049\nNitzscheberg, LA 67570-4119',0,32767,'07:40:01','23:34:32','08:30:05','21:15:18','1971-08-28 17:58:41','2003-07-22 02:51:30'),
+	(4,4,1,'molestias','Aut veniam dolorem deleniti suscipit. Voluptatibus magnam ducimus nisi.',4,'Paris','235','6958 Wilfrid Parkways\nLake Elliot, OH 68434-3306',0,32767,'13:57:23','00:30:54','02:15:04','08:52:22','1976-06-12 22:39:45','2019-04-17 02:19:39'),
+	(5,5,2,'provident','Ullam maiores fugit et aliquam ea quia quos. Sit quis et corrupti soluta.',5,'Moscow','852','053 Roxanne Corners Apt. 552\nLake Wyatt, NV 99093-8424',0,32767,'12:01:08','11:53:49','03:05:00','17:12:44','2014-10-10 13:39:03','2010-09-29 23:09:17'),
+	(6,6,3,'sunt','Sapiente error quidem assumenda libero quia. Ipsam autem minima quo perspiciatis enim tempore. Culpa et voluptatem omnis voluptatem nesciunt doloremque. Voluptas odio pariatur molestiae sequi quisquam molestiae qui quas.',6,'Moscow','823','7111 Toy Forest Suite 186\nBernhardville, NE 71156',0,64,'23:10:19','07:35:41','13:52:34','15:25:24','2001-07-20 12:44:55','1975-08-12 11:59:39'),
+	(7,7,1,'temporibus','Voluptatum omnis at soluta. Modi velit non odit libero. Doloribus voluptates ab veritatis perspiciatis aliquid.',7,'Paris','900','01172 Alyson Spur\nGrahambury, MS 29250',0,32767,'00:24:35','22:33:35','13:19:44','11:22:35','2015-02-13 14:26:11','1998-08-22 00:48:52'),
+	(8,8,2,'dolores','Occaecati enim tempora est quam deserunt ea. Corrupti doloribus non incidunt non. Ullam dolorem asperiores eum nobis laboriosam corporis quibusdam.',8,'Moscow','978','766 Ratke Square\nAlexzanderburgh, MD 39737',0,2136,'02:11:39','09:48:05','06:29:08','19:20:18','1978-11-06 06:16:55','2010-01-27 10:13:41'),
+	(9,9,3,'laborum','Similique quo dolorum quia alias mollitia. A magnam occaecati voluptatum. Assumenda maxime quo qui dicta. Est eveniet amet iste nemo voluptates.',9,'Berlin','673','619 Maurice Stream\nHershelton, CO 20465-9105',0,32767,'15:26:23','04:07:15','15:32:47','16:29:24','2000-08-30 13:02:27','1998-11-18 15:38:02'),
+	(10,10,1,'et','Iste ipsam deserunt laboriosam voluptatum ratione doloremque et. Dolore maiores rerum et non rem et in. Ipsum itaque eos beatae qui. Ducimus hic occaecati iste quaerat harum.',10,'Paris','349','68574 Nikolaus Canyon Suite 678\nReannamouth, MO 95023-4352',0,32767,'13:25:35','05:18:05','10:35:22','15:22:50','1991-05-10 02:05:54','2012-09-18 17:10:34');
 
 
 -- Создаем таблицу с типами комнат и заполняем ее данными
@@ -267,6 +275,7 @@ INSERT INTO `orders` VALUES
 -- Создаем таблиицу с детялями заказов и заполняем ее данными
 DROP TABLE IF EXISTS order_details;
 CREATE TABLE order_details (
+	id SERIAL PRIMARY KEY,
 	order_id BIGINT UNSIGNED NOT NULL,
 	property_id BIGINT UNSIGNED NOT NULL,
 	start_date DATE NOT NULL,
@@ -278,16 +287,16 @@ CREATE TABLE order_details (
 );
 
 INSERT INTO `order_details` VALUES 
-	(1,1,'2017-04-15','2019-09-10',2),
-	(2,2,'1994-06-28','2013-09-24',3),
-	(3,3,'1986-04-03','2002-03-10',1),
-	(4,4,'1997-10-12','2011-08-13',2),
-	(5,5,'1986-10-28','2019-03-06',2),
-	(6,6,'1984-09-20','2017-03-05',3),
-	(7,7,'1982-10-20','2009-09-14',4),
-	(8,8,'1990-06-03','2012-12-10',1),
-	(9,9,'2001-08-18','2008-07-29',1),
-	(10,10,'2017-08-05','2018-05-02',1);
+	(1,1,1,'2017-04-15','2019-09-10',2),
+	(2,2,2,'1994-06-28','2013-09-24',3),
+	(3,3,3,'1986-04-03','2002-03-10',1),
+	(4,4,4,'1997-10-12','2011-08-13',2),
+	(5,5,5,'1986-10-28','2019-03-06',2),
+	(6,6,6,'2021-09-20','2021-09-30',3),
+	(7,7,7,'1982-10-20','2009-09-14',4),
+	(8,8,8,'1990-06-03','2012-12-10',1),
+	(9,9,9,'2001-08-18','2008-07-29',1),
+	(10,10,10,'2017-08-05','2018-05-02',1);
 
 
 -- Создаем таблицу с отзывами и заполняем ее данными
@@ -350,5 +359,113 @@ INSERT INTO `payment` VALUES
 	(9,9,1,1300,0.00,'2001-08-18','2008-07-29'),
 	(10,10,0,5550,0.20,'2017-08-05','2018-05-02');
 
+
+
+/*Формируем выборку объектов недвижимости в г.Москва с рейтингом по каждому объекту, свободных в период с 25.09.2021 по 29.09.2021, в которых возможно размещение с животными*/
+-- Создаем хранимую функцию для подсчета совокупного рейтинга по объекту недвижимости исходя из оценок по различным критериям
+DROP FUNCTION IF EXISTS final_rating;
+
+-- Переназначаем признак окончания запроса  
+DELIMITER //
+
+-- Создаем функцию
+CREATE FUNCTION final_rating (id INT)
+RETURNS decimal(3,1) READS SQL DATA
+BEGIN 
+	DECLARE rating decimal(3,1);
+
+	SELECT 
+		(AVG(location)+AVG(staff)+AVG(ratio)+AVG(clean)+AVG(comfort)+AVG(facilities)+AVG(wireless_internet))/7 
+	INTO rating
+	FROM rewiew
+	GROUP BY property_id
+	HAVING property_id = id;
+
+	RETURN rating;
+END//	
+
+-- Переназначаем признак окончания запроса  
+DELIMITER ;
+
+
+/* Создаем запрос, который позволяет сформировать выборку объектов недвижимости, находящихся в Москве 
+и в которых возможно размещение с животными c 25.09.2021 по 29.09.2021*/
+-- Объявляем переменные с необходимыми датами заезда и отъезда
+SET @start_date := '2021-09-25';
+SET @finish_date := '2021-09-29';
+
+-- Формируем запрос (используем вложенные запросы и JOIN)
+SELECT 
+	p.id,
+	p.town,
+	p.name,
+	p.description,
+	final_rating(id) AS rating,
+	IF(f.pets = 1, 'Можно с животными', 'С животными нельзя') AS pets,
+	(SELECT 
+		IF(((@start_date > start_date  AND @start_date < finish_date) OR (@finish_date > start_date  AND @finish_date < finish_date)), 'Даты заняты', 'Даты свободны') AS free_date
+	FROM order_details AS o
+	WHERE o.property_id = p.id) AS free_dates
+FROM property AS p 
+JOIN facilities AS f
+ON p.id = f.property_id 
+WHERE p.town = 'Moscow' AND f.pets = 1 
+ORDER BY rating DESC;	
+
+
+/*Сформируем представление, в котором высчитывается срендняя стоимость объектов недвижимости по различным городам, предсталенным на сайте */
+CREATE OR REPLACE VIEW avg_price AS
+SELECT
+	p.town,
+	AVG(pm.price) AS average_price
+FROM property AS p
+JOIN payment AS pm 
+ON p.id = pm.property_id
+GROUP BY p.town;
+
+
+
+/*Создаем триггер, который будет проверять даты заезда и выезда в таблице с деталями заказа (выезд не может быть раньше заезда)*/
+-- Переназначаем признак окончания запроса  
+DELIMITER //
+
+-- Создаем триггер, который будет проверять данные при вставке данных в таблицу order_details
+CREATE TRIGGER check_date_insert BEFORE INSERT ON order_details
+FOR EACH ROW 
+BEGIN 
+	IF NEW.start_date > NEW.finish_date THEN 
+		SIGNAL SQLSTATE '45000' 
+		SET MESSAGE_TEXT = 'Date error';
+	END IF;
+END//
+
+-- Создаем триггер, который будет проверять данные при обновлении данных в таблицу order_details
+CREATE TRIGGER check_date_update BEFORE UPDATE ON order_details
+FOR EACH ROW 
+BEGIN 
+	IF NEW.start_date > NEW.finish_date THEN 
+		SIGNAL SQLSTATE '45000' 
+		SET MESSAGE_TEXT = 'Date error';
+	END IF;
+END//
+
+-- Переназначаем признак окончания запроса  
+DELIMITER ;
+
+-- Проверяем работоспособность триггера при вставке новых данных (первый запрос должен вызвать ошибку, второй - верный)
+INSERT INTO order_details VALUES
+	(1,5,'2021-04-15','2021-04-10',2,);
+
+INSERT INTO order_details VALUES
+	(1,5,'2021-04-15','2021-04-20',2);
+
+-- Проверяем работоспособность триггера при обновлении данных (первый запрос должен вызвать ошибку, второй - верный)
+UPDATE order_details
+SET start_date = '2021-04-15', finish_date = '2021-04-10'
+WHERE confirmation = 1;
+
+UPDATE order_details
+SET start_date = '2021-04-15', finish_date = '2021-04-20'
+WHERE confirmation = 1;
 
 
