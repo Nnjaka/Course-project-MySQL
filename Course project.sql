@@ -1,3 +1,8 @@
+/* Booking.com — крупнейший сайт бронирования проживания в мире. Арендодатели могут разместить свой объект недвижимости для последующей его сдачи в аренду.  
+ Сайт предоставляет широкую настройку для описания объекта. Арендосъемщик на основе этой информации и отзывов от других пользователей, которые ранее проживали 
+ в данном объекте, может подобрать идеальный вариант для проживания. */
+
+
 -- Создаем и выбираем БД
 DROP DATABASE IF EXISTS booking;
 CREATE DATABASE booking;
@@ -107,8 +112,9 @@ CREATE TABLE property (
 	user_id BIGINT UNSIGNED NOT NULL,
 	type_of_property_id BIGINT UNSIGNED NOT NULL,
 	name VARCHAR(255) NOT NULL,
+	description TEXT NOT NULL,
 	media_id BIGINT UNSIGNED NOT NULL,
-	country VARCHAR(100) NOT NULL,
+	town VARCHAR(100) NOT NULL,
 	postcode VARCHAR(100) NOT NULL,
 	address VARCHAR(255) NOT NULL,
 	guest TINYINT NOT NULL COMMENT 'Количество гостей',
@@ -126,16 +132,16 @@ CREATE TABLE property (
 );
 
 INSERT INTO `property` VALUES 
-	(1,1,1,'recusandae',1,'56855','679','81423 Kirlin Run Apt. 514\nChanellestad, KS 41538-9468',0,32767,'10:00:00','12:00:54','15:27:36','17:39:02','1980-01-16 18:15:00','1977-11-21 00:24:03'),
-	(2,2,2,'earum',2,'9652843','896','6278 Kallie Village Suite 343\nPort Carolannefurt, NE 32430-4930',0,5868,'08:46:44','23:58:56','06:54:17','09:27:13','1975-05-25 09:05:12','2005-09-03 11:06:57'),
-	(3,3,3,'dolores',3,'57','599','21708 Coleman Street Apt. 049\nNitzscheberg, LA 67570-4119',0,32767,'07:40:01','23:34:32','08:30:05','21:15:18','1971-08-28 17:58:41','2003-07-22 02:51:30'),
-	(4,4,1,'molestias',4,'322413','235','6958 Wilfrid Parkways\nLake Elliot, OH 68434-3306',0,32767,'13:57:23','00:30:54','02:15:04','08:52:22','1976-06-12 22:39:45','2019-04-17 02:19:39'),
-	(5,5,2,'provident',5,'57401','852','053 Roxanne Corners Apt. 552\nLake Wyatt, NV 99093-8424',0,32767,'12:01:08','11:53:49','03:05:00','17:12:44','2014-10-10 13:39:03','2010-09-29 23:09:17'),
-	(6,6,3,'sunt',6,'49','823','7111 Toy Forest Suite 186\nBernhardville, NE 71156',0,64,'23:10:19','07:35:41','13:52:34','15:25:24','2001-07-20 12:44:55','1975-08-12 11:59:39'),
-	(7,7,1,'temporibus',7,'77','900','01172 Alyson Spur\nGrahambury, MS 29250',0,32767,'00:24:35','22:33:35','13:19:44','11:22:35','2015-02-13 14:26:11','1998-08-22 00:48:52'),
-	(8,8,2,'dolores',8,'339946','978','766 Ratke Square\nAlexzanderburgh, MD 39737',0,2136,'02:11:39','09:48:05','06:29:08','19:20:18','1978-11-06 06:16:55','2010-01-27 10:13:41'),
-	(9,9,3,'laborum',9,'36','673','619 Maurice Stream\nHershelton, CO 20465-9105',0,32767,'15:26:23','04:07:15','15:32:47','16:29:24','2000-08-30 13:02:27','1998-11-18 15:38:02'),
-	(10,10,1,'et',10,'7900159','349','68574 Nikolaus Canyon Suite 678\nReannamouth, MO 95023-4352',0,32767,'13:25:35','05:18:05','10:35:22','15:22:50','1991-05-10 02:05:54','2012-09-18 17:10:34');
+	(1,1,1,'recusandae','Lorem ipsum',1,'Moscow','679','81423 Kirlin Run Apt. 514\nChanellestad, KS 41538-9468',0,32767,'10:00:00','12:00:54','15:27:36','17:39:02','1980-01-16 18:15:00','1977-11-21 00:24:03'),
+	(2,2,2,'earum','Lorem ipsum',2,'Moscow','896','6278 Kallie Village Suite 343\nPort Carolannefurt, NE 32430-4930',0,5868,'08:46:44','23:58:56','06:54:17','09:27:13','1975-05-25 09:05:12','2005-09-03 11:06:57'),
+	(3,3,3,'dolores','Lorem ipsum',3,'Paris','599','21708 Coleman Street Apt. 049\nNitzscheberg, LA 67570-4119',0,32767,'07:40:01','23:34:32','08:30:05','21:15:18','1971-08-28 17:58:41','2003-07-22 02:51:30'),
+	(4,4,1,'molestias','Lorem ipsum',4,'Paris','235','6958 Wilfrid Parkways\nLake Elliot, OH 68434-3306',0,32767,'13:57:23','00:30:54','02:15:04','08:52:22','1976-06-12 22:39:45','2019-04-17 02:19:39'),
+	(5,5,2,'provident','Lorem ipsum',5,'Moscow','852','053 Roxanne Corners Apt. 552\nLake Wyatt, NV 99093-8424',0,32767,'12:01:08','11:53:49','03:05:00','17:12:44','2014-10-10 13:39:03','2010-09-29 23:09:17'),
+	(6,6,3,'sunt','Lorem ipsum',6,'Moscow','823','7111 Toy Forest Suite 186\nBernhardville, NE 71156',0,64,'23:10:19','07:35:41','13:52:34','15:25:24','2001-07-20 12:44:55','1975-08-12 11:59:39'),
+	(7,7,1,'temporibus','Lorem ipsum',7,'Paris','900','01172 Alyson Spur\nGrahambury, MS 29250',0,32767,'00:24:35','22:33:35','13:19:44','11:22:35','2015-02-13 14:26:11','1998-08-22 00:48:52'),
+	(8,8,2,'dolores','Lorem ipsum',8,'Moscow','978','766 Ratke Square\nAlexzanderburgh, MD 39737',0,2136,'02:11:39','09:48:05','06:29:08','19:20:18','1978-11-06 06:16:55','2010-01-27 10:13:41'),
+	(9,9,3,'laborum','Lorem ipsum',9,'Berlin','673','619 Maurice Stream\nHershelton, CO 20465-9105',0,32767,'15:26:23','04:07:15','15:32:47','16:29:24','2000-08-30 13:02:27','1998-11-18 15:38:02'),
+	(10,10,1,'et','Lorem ipsum',10,'Paris','349','68574 Nikolaus Canyon Suite 678\nReannamouth, MO 95023-4352',0,32767,'13:25:35','05:18:05','10:35:22','15:22:50','1991-05-10 02:05:54','2012-09-18 17:10:34');
 
 
 -- Создаем таблицу с типами комнат и заполняем ее данными
@@ -351,4 +357,43 @@ INSERT INTO `payment` VALUES
 	(10,10,0,5550,0.20,'2017-08-05','2018-05-02');
 
 
+-- Создаем хранимую функцию для подсчета совокупного рейтинга по объекту недвижимости исходя из оценок по критериям
+DROP FUNCTION IF EXISTS final_rating;
+
+-- Переназначаем признак окончания запроса  
+DELIMITER //
+
+-- Создаем функцию
+CREATE FUNCTION final_rating (id INT)
+RETURNS decimal(3,1) READS SQL DATA
+BEGIN 
+	DECLARE rating decimal(3,1);
+
+	SELECT 
+		(AVG(location)+AVG(staff)+AVG(ratio)+AVG(clean)+AVG(comfort)+AVG(facilities)+AVG(wireless_internet))/7 
+	INTO rating
+	FROM rewiew
+	GROUP BY property_id
+	HAVING property_id = id;
+
+	RETURN rating;
+END//	
+
+-- Переназначаем признак окончания запроса  
+DELIMITER ;
+
+
+/* Создаем представление, которое позволяет сформировать выборку объектов недвижимости, находящихся в Москве 
+и в которых возможно размещение с животными*/
+SELECT 
+	p.id,
+	p.name,
+	p.description,
+	final_rating(id) AS rating,
+	IF(f.pets = 1, 'Можно с животными', 'С животными нельзя') AS pets
+FROM property AS p 
+JOIN facilities AS f
+ON p.id = f.property_id 
+WHERE p.town = 'Moscow' AND f.pets = 1
+ORDER BY rating DESC;	
 
