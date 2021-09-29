@@ -368,7 +368,7 @@ DROP FUNCTION IF EXISTS final_rating;
 -- Переназначаем признак окончания запроса  
 DELIMITER //
 
--- Создаем функцию
+-- Создаем функцию 
 CREATE FUNCTION final_rating (id INT)
 RETURNS decimal(3,1) READS SQL DATA
 BEGIN 
@@ -413,6 +413,7 @@ WHERE p.town = 'Moscow' AND f.pets = 1
 ORDER BY rating DESC;	
 
 
+
 /*Сформируем представление, в котором высчитывается срендняя стоимость объектов недвижимости по различным городам, предсталенным на сайте */
 CREATE OR REPLACE VIEW avg_price AS
 SELECT
@@ -454,18 +455,18 @@ DELIMITER ;
 
 -- Проверяем работоспособность триггера при вставке новых данных (первый запрос должен вызвать ошибку, второй - верный)
 INSERT INTO order_details VALUES
-	(1,5,'2021-04-15','2021-04-10',2,);
+	(11,1,5,'2021-04-15','2021-04-10',2);
 
 INSERT INTO order_details VALUES
-	(1,5,'2021-04-15','2021-04-20',2);
+	(11,1,5,'2021-04-15','2021-04-20',2);
 
 -- Проверяем работоспособность триггера при обновлении данных (первый запрос должен вызвать ошибку, второй - верный)
 UPDATE order_details
 SET start_date = '2021-04-15', finish_date = '2021-04-10'
-WHERE confirmation = 1;
+WHERE id = 1;
 
 UPDATE order_details
 SET start_date = '2021-04-15', finish_date = '2021-04-20'
-WHERE confirmation = 1;
+WHERE id = 1;
 
 
