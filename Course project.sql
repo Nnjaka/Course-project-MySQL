@@ -18,7 +18,9 @@ CREATE TABLE users (
     lastname VARCHAR(50),
     email VARCHAR(120) UNIQUE  NOT NULL,
  	password_hash VARCHAR(100) NOT NULL, 
-	phone BIGINT UNSIGNED UNIQUE NOT NULL
+	phone BIGINT UNSIGNED UNIQUE NOT NULL,
+	
+	INDEX users_firstname_lastname_idx(firstname, lastname)
 );
 
 INSERT INTO `users` VALUES 
@@ -35,19 +37,21 @@ INSERT INTO `users` VALUES
 
 	
 -- Создаем таблицу для фотографий и заполняем ее данными
-DROP TABLE IF EXISTS media;
-CREATE TABLE media(
+DROP TABLE IF EXISTS photos;
+CREATE TABLE photos(
 	id SERIAL PRIMARY KEY,
     user_id BIGINT UNSIGNED NOT NULL,
-    filename VARCHAR(255),
+    filename VARCHAR(255) UNIQUE,
 	metadata JSON,
     created_at DATETIME DEFAULT NOW(),
     updated_at DATETIME ON UPDATE CURRENT_TIMESTAMP,
 
+    INDEX photos_user_id_idx(user_id),
+    
     FOREIGN KEY (user_id) REFERENCES users(id)
 );
 
-INSERT INTO `media` VALUES 
+INSERT INTO `photos` VALUES 
 	(1,1,'id',NULL,'2015-12-06 12:42:50','2006-12-11 21:40:52'),
 	(2,2,'voluptas',NULL,'1986-07-04 13:22:38','2001-11-14 07:04:29'),
 	(3,3,'dolorem',NULL,'2001-10-06 03:02:29','1993-08-06 11:44:19'),
@@ -65,42 +69,45 @@ DROP TABLE IF EXISTS profiles;
 CREATE TABLE profiles (
 	user_id BIGINT UNSIGNED NOT NULL,
 	title ENUM ('Mr', 'Ms', 'Mrs'),
-	display_name VARCHAR(50) NOT NULL COMMENT 'Имя на сайте',
+	display_name VARCHAR(50) UNIQUE NOT NULL COMMENT 'Имя на сайте',
 	date_of_birth DATE,
 	nationality VARCHAR(255),
 	gender CHAR(1),
 	country VARCHAR(100),
     address VARCHAR(255),
-	media_id BIGINT UNSIGNED NOT NULL COMMENT 'Фотография профиля',
+	photo_id BIGINT UNSIGNED NOT NULL COMMENT 'Фотография профиля',
     created_at DATETIME DEFAULT NOW(),
     updated_at DATETIME ON UPDATE NOW(),
     
+    INDEX profiles_user_id_idx(user_id),
+    INDEX profiles_photo_id_idx(photo_id),
+    
     FOREIGN KEY (user_id) REFERENCES users(id),
-    FOREIGN KEY (media_id) REFERENCES media(id)
+    FOREIGN KEY (photo_id) REFERENCES photos(id)
 );
 
 INSERT INTO `profiles` VALUES 
 	(1,'Mrs','exercitationem','1996-10-26','Russian','f','Russia','76332 Jenkins River\nNorth Justonburgh, PA 69837',1,'1986-03-20 23:17:40','2009-09-20 10:17:28'),
 	(2,'Mr','in','2001-06-15','French','m','France','29046 Bartoletti Shoals\nHomenickland, TN 05899-5087',2,'1971-08-03 13:29:38','2002-08-04 19:48:55'),
 	(3,'Mr','illum','1975-10-20','Russian','m','Russia','7601 Ullrich Lane\nBrownview, ID 81388',3,'1997-04-26 01:11:30','2011-06-05 18:02:54'),
-	(4,'Ms','iure','2017-10-26','French','f','France','54202 Thad Plains Suite 950\nPort Elwin, IL 03124',4,'1996-07-16 00:38:07','1992-07-06 03:42:31'),
+	(4,'Ms','iure','2001-10-26','French','f','France','54202 Thad Plains Suite 950\nPort Elwin, IL 03124',4,'1996-07-16 00:38:07','1992-07-06 03:42:31'),
 	(5,'Mrs','alias','1971-10-03','German','f','Germany','938 Ziemann Drives\nNorth Briceton, DE 30918',5,'2021-09-07 18:09:46','2010-06-30 09:44:42'),
 	(6,'Mrs','saepe','1974-07-22','Russian','f','Russia','574 Melody Trail Apt. 804\nVellaberg, WI 70211-3006',6,'1972-10-25 04:59:36','2013-12-02 12:16:46'),
 	(7,'Mr','doloremque','1998-02-21','German','m','Germany','89043 Streich Point Suite 105\nAlfredfort, NY 72999-4360',7,'1978-09-25 18:21:02','2004-02-14 00:02:21'),
 	(8,'Ms','sit','1991-04-17','German','f','Germany','4338 Moore Brooks\nHuelstown, IN 24487-0494',8,'2020-10-21 06:47:25','2000-02-21 04:26:35'),
-	(9,'Mr','voluptas','2006-06-25','Spanish','m','Spain','309 Keaton Turnpike\nHyattmouth, NM 69569',9,'1993-05-15 20:17:10','1989-11-17 01:15:40'),
+	(9,'Mr','voluptas','1986-06-25','Spanish','m','Spain','309 Keaton Turnpike\nHyattmouth, NM 69569',9,'1993-05-15 20:17:10','1989-11-17 01:15:40'),
 	(10,'Mrs','a','1982-01-22','Russian','f','Russia','838 Wehner Curve\nPort Pabloside, ME 13640',10,'1975-07-17 06:17:40','1978-08-13 09:46:27');
 
 
 -- Создаем таблицу с типами недвижимости и заполняем ее данными
-DROP TABLE IF EXISTS type_of_property;
-CREATE TABLE type_of_property (
+DROP TABLE IF EXISTS types_of_property;
+CREATE TABLE types_of_property (
 	id SERIAL PRIMARY KEY,
-	name VARCHAR(255),
+	name VARCHAR(255) UNIQUE,
 	desсription TEXT COMMENT 'Описание типа недвижимости'
 );
 
-INSERT INTO `type_of_property` VALUES 
+INSERT INTO `types_of_property` VALUES 
 	(1,'Apartment','Furnished and self-catering accommodation, where guests rent the entire place'),
 	(2,'Home','Properties like apartments, holiday homes, villas, etc.'),
 	(3,'Hotel, B&Bs, and more','Properties like hotels, B&Bs, guest houses, hostels, aparthotels, etc.'),
@@ -113,24 +120,29 @@ CREATE TABLE property (
 	id SERIAL PRIMARY KEY,
 	user_id BIGINT UNSIGNED NOT NULL,
 	type_of_property_id BIGINT UNSIGNED NOT NULL,
-	name VARCHAR(255) NOT NULL,
+	name VARCHAR(255) UNIQUE NOT NULL,
 	description TEXT NOT NULL,
-	media_id BIGINT UNSIGNED NOT NULL,
+	photo_id BIGINT UNSIGNED NOT NULL,
 	town VARCHAR(100) NOT NULL,
 	postcode VARCHAR(100) NOT NULL,
 	address VARCHAR(255) NOT NULL,
 	guest TINYINT NOT NULL COMMENT 'Количество гостей',
 	property_size SMALLINT NOT NULL COMMENT 'Площадь недвижимости',
-	check_in_from TIME COMMENT 'Время заезда (с...)',
-	check_in_until TIME COMMENT 'Время заезда (до...)',
-	check_out_from TIME COMMENT 'Время отъезда (с...)',
-	check_out_until TIME COMMENT 'Время отъезда (до...)',
+	check_in_from TIME NOT NULL COMMENT 'Время заезда (с...)',
+	check_in_until TIME NOT NULL COMMENT 'Время заезда (до...)',
+	check_out_from TIME NOT NULL COMMENT 'Время отъезда (с...)',
+	check_out_until TIME NOT NULL COMMENT 'Время отъезда (до...)',
 	created_at DATETIME DEFAULT NOW(),
     updated_at DATETIME ON UPDATE NOW(),
 	
+    INDEX property_user_id_idx(user_id),
+    INDEX property_type_of_property_id_idx(type_of_property_id),
+    INDEX property_photo_id_idx(photo_id),
+	INDEX property_town_idx(town),
+    
 	FOREIGN KEY (user_id) REFERENCES users(id),
-	FOREIGN KEY (type_of_property_id) REFERENCES type_of_property(id),
-	FOREIGN KEY (media_id) REFERENCES media(id)
+	FOREIGN KEY (type_of_property_id) REFERENCES types_of_property(id),
+	FOREIGN KEY (photo_id) REFERENCES photos(id)
 );
 
 INSERT INTO `property` VALUES 
@@ -141,7 +153,7 @@ INSERT INTO `property` VALUES
 	(5,5,2,'provident','Ullam maiores fugit et aliquam ea quia quos. Sit quis et corrupti soluta.',5,'Moscow','852','053 Roxanne Corners Apt. 552\nLake Wyatt, NV 99093-8424',0,32767,'12:01:08','11:53:49','03:05:00','17:12:44','2014-10-10 13:39:03','2010-09-29 23:09:17'),
 	(6,6,3,'sunt','Sapiente error quidem assumenda libero quia. Ipsam autem minima quo perspiciatis enim tempore. Culpa et voluptatem omnis voluptatem nesciunt doloremque. Voluptas odio pariatur molestiae sequi quisquam molestiae qui quas.',6,'Moscow','823','7111 Toy Forest Suite 186\nBernhardville, NE 71156',0,64,'23:10:19','07:35:41','13:52:34','15:25:24','2001-07-20 12:44:55','1975-08-12 11:59:39'),
 	(7,7,1,'temporibus','Voluptatum omnis at soluta. Modi velit non odit libero. Doloribus voluptates ab veritatis perspiciatis aliquid.',7,'Paris','900','01172 Alyson Spur\nGrahambury, MS 29250',0,32767,'00:24:35','22:33:35','13:19:44','11:22:35','2015-02-13 14:26:11','1998-08-22 00:48:52'),
-	(8,8,2,'dolores','Occaecati enim tempora est quam deserunt ea. Corrupti doloribus non incidunt non. Ullam dolorem asperiores eum nobis laboriosam corporis quibusdam.',8,'Moscow','978','766 Ratke Square\nAlexzanderburgh, MD 39737',0,2136,'02:11:39','09:48:05','06:29:08','19:20:18','1978-11-06 06:16:55','2010-01-27 10:13:41'),
+	(8,8,2,'dolore','Occaecati enim tempora est quam deserunt ea. Corrupti doloribus non incidunt non. Ullam dolorem asperiores eum nobis laboriosam corporis quibusdam.',8,'Moscow','978','766 Ratke Square\nAlexzanderburgh, MD 39737',0,2136,'02:11:39','09:48:05','06:29:08','19:20:18','1978-11-06 06:16:55','2010-01-27 10:13:41'),
 	(9,9,3,'laborum','Similique quo dolorum quia alias mollitia. A magnam occaecati voluptatum. Assumenda maxime quo qui dicta. Est eveniet amet iste nemo voluptates.',9,'Berlin','673','619 Maurice Stream\nHershelton, CO 20465-9105',0,32767,'15:26:23','04:07:15','15:32:47','16:29:24','2000-08-30 13:02:27','1998-11-18 15:38:02'),
 	(10,10,1,'et','Iste ipsam deserunt laboriosam voluptatum ratione doloremque et. Dolore maiores rerum et non rem et in. Ipsum itaque eos beatae qui. Ducimus hic occaecati iste quaerat harum.',10,'Paris','349','68574 Nikolaus Canyon Suite 678\nReannamouth, MO 95023-4352',0,32767,'13:25:35','05:18:05','10:35:22','15:22:50','1991-05-10 02:05:54','2012-09-18 17:10:34');
 
@@ -150,7 +162,7 @@ INSERT INTO `property` VALUES
 DROP TABLE IF EXISTS room_types;
 CREATE TABLE room_types (
 	id SERIAL PRIMARY KEY,
-	name VARCHAR(50) NOT NULL
+	name VARCHAR(50) UNIQUE NOT NULL
 );
 
 INSERT INTO `room_types` VALUES 
@@ -163,7 +175,7 @@ INSERT INTO `room_types` VALUES
 DROP TABLE IF EXISTS beds;
 CREATE TABLE beds (
  	id SERIAL PRIMARY KEY,
- 	name VARCHAR(255),
+ 	name VARCHAR(255) UNIQUE NOT NULL,
  	desсription TEXT COMMENT 'Описание типа спальных мест: односпальная кровать, двуспальная и т.д.'
 );
 
@@ -186,6 +198,10 @@ CREATE TABLE rooms (
 	bed_id BIGINT UNSIGNED NOT NULL,
 	bathrooms TINYINT,
 	
+	INDEX rooms_property_id_idx(property_id),
+	INDEX rooms_room_type_id_idx(room_type_id),
+	INDEX rooms_bed_id_idx(bed_id),
+	      
 	FOREIGN KEY (property_id) REFERENCES property(id),
 	FOREIGN KEY (room_type_id) REFERENCES room_types(id),
 	FOREIGN KEY (bed_id) REFERENCES beds(id)
@@ -232,6 +248,8 @@ CREATE TABLE facilities (
 	children BOOL DEFAULT 0 COMMENT 'Можно с детьми',
 	parties BOOL DEFAULT 0 COMMENT 'Можно проводить вечеринки/мероприятия',
 	
+	INDEX facilities_property_id_idx(property_id),
+	
 	FOREIGN KEY (property_id) REFERENCES property(id)
 );
 
@@ -256,6 +274,8 @@ CREATE TABLE orders (
 	created_at DATETIME DEFAULT NOW(),
     updated_at DATETIME ON UPDATE NOW(),
 	
+    INDEX orders_user_id_idx(user_id),
+    
 	FOREIGN KEY (user_id) REFERENCES users(id)
 );
 
@@ -282,6 +302,10 @@ CREATE TABLE order_details (
 	finish_date DATE NOT NULL,
 	guest TINYINT NOT NULL COMMENT 'Количество гостей',
 
+	INDEX order_details_order_id_idx(order_id),
+	INDEX order_details_property_id_idx(property_id),
+	INDEX order_details_start_date_finish_date_idx(start_date, finish_date),
+	
 	FOREIGN KEY (order_id) REFERENCES orders(id),
 	FOREIGN KEY (property_id) REFERENCES property(id)
 );
@@ -300,8 +324,8 @@ INSERT INTO `order_details` VALUES
 
 
 -- Создаем таблицу с отзывами и заполняем ее данными
-DROP TABLE IF EXISTS rewiew;
-CREATE TABLE rewiew (
+DROP TABLE IF EXISTS rewiews;
+CREATE TABLE rewiews (
 	id SERIAL PRIMARY KEY,
 	user_id BIGINT UNSIGNED NOT NULL,
 	property_id BIGINT UNSIGNED NOT NULL,
@@ -316,11 +340,14 @@ CREATE TABLE rewiew (
 	created_at DATETIME DEFAULT NOW(),
     updated_at DATETIME ON UPDATE NOW(),
 
+    INDEX rewiews_user_id_idx(user_id),
+	INDEX rewiews_property_id_idx(property_id),
+
 	FOREIGN KEY (user_id) REFERENCES users(id),
 	FOREIGN KEY (property_id) REFERENCES property(id)
 );
 
-INSERT INTO `rewiew` VALUES 
+INSERT INTO `rewiews` VALUES 
 	(1,1,1,4,4,1,5,5,9,1,'Molestiae architecto autem aut in. Sunt adipisci fuga cupiditate nobis. Ratione odit sit doloremque est qui occaecati ex.','1973-06-02 12:54:12','1974-09-23 08:04:04'),
 	(2,2,2,1,4,10,5,10,5,5,'Suscipit perspiciatis sed fugit ipsa quos atque. Molestiae culpa consequatur iste tempora dolores cum atque. Quae sed eos ab aliquid sunt quam unde. Minus molestias quidem sapiente non autem autem qui.','1972-06-23 15:36:06','1993-07-06 22:35:28'),
 	(3,3,3,7,4,7,3,5,4,4,'Explicabo non rerum voluptates est necessitatibus. Illo tempora et repudiandae voluptas ut dolorem. Placeat nobis cupiditate consequatur repellendus. Omnis vero expedita aliquam et corporis explicabo deleniti.','1994-02-07 00:38:18','1999-07-14 21:13:00'),
@@ -334,8 +361,8 @@ INSERT INTO `rewiew` VALUES
 
 
 -- Создаем таблицу с данными по оплате и заполняем ее данными
-DROP TABLE IF EXISTS payment;
-CREATE TABLE payment (
+DROP TABLE IF EXISTS payments;
+CREATE TABLE payments (
 	id SERIAL PRIMARY KEY,
 	property_id BIGINT UNSIGNED NOT NULL,
 	bank_card BOOL DEFAULT 0 COMMENT 'Возможность оплаты банковской картой',
@@ -344,10 +371,14 @@ CREATE TABLE payment (
 	created_at DATETIME DEFAULT NOW(),
     updated_at DATETIME ON UPDATE NOW(),
 
-	FOREIGN KEY (property_id) REFERENCES property(id)
+    INDEX payments_property_id_idx(property_id),
+    INDEX payments_bank_card_idx(bank_card),
+	INDEX payments_price_idx(price),
+
+	FOREIGN KEY (property_id) REFERENCES property(id)	
 );
 
-INSERT INTO `payment` VALUES 
+INSERT INTO `payments` VALUES 
 	(1,1,0,2200,0.05,'2017-04-15','2019-09-10'),
 	(2,2,0,5500,0.00,'1994-06-28','2013-09-24'),
 	(3,3,1,1450,0.00,'1986-04-03','2002-03-10'),
@@ -377,7 +408,7 @@ BEGIN
 	SELECT 
 		(AVG(location)+AVG(staff)+AVG(ratio)+AVG(clean)+AVG(comfort)+AVG(facilities)+AVG(wireless_internet))/7 
 	INTO rating
-	FROM rewiew
+	FROM rewiews
 	GROUP BY property_id
 	HAVING property_id = id;
 
@@ -420,9 +451,25 @@ SELECT
 	p.town,
 	AVG(pm.price) AS average_price
 FROM property AS p
-JOIN payment AS pm 
-ON p.id = pm.property_id
+	JOIN payments AS pm 
+		ON p.id = pm.property_id
 GROUP BY p.town;
+
+
+/*Сформируем представление, в котором высчитывается возраст владельцев недвижимости в г.Париж*/
+CREATE OR REPLACE VIEW owner_age_paris AS
+SELECT 
+	p.name AS property_name,
+	CONCAT(u.firstname,' ',u.lastname) AS owner,
+	TIMESTAMPDIFF(YEAR, pf.date_of_birth, NOW()) AS age
+FROM order_details AS od 
+	JOIN property AS p
+		ON od.property_id = p.id 
+	JOIN users AS u
+		ON p.user_id = u.id 
+	JOIN profiles AS pf 
+		ON u.id = pf.user_id 
+WHERE p.town = 'Paris';
 
 
 
